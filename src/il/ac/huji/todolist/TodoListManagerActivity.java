@@ -1,22 +1,47 @@
 package il.ac.huji.todolist;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-public class TodoListManagerActivity extends Activity {
+public class TodoListManagerActivity extends ListActivity {
 
-    private Array<String> todoStrings = ListArray<String>();
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menuItemAdd:
+			// Blah Blah
+			break;
+		case R.id.menuItemDelete:
+			// Other Blah Blah
+			break;
+		default:
+			// No Op
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private static List<String> todoStrings = new ArrayList<String> ();
+	private ArrayAdapter adapter;
+	private ListView todoList;
     static {
-        todoString.add("Test!!!");
+        todoStrings.add("Test!!!");
     }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list_manager);
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, 
-                        R.id.lstTodoItems, todoStrings);
+        adapter = new TodoAdapter(this);
+        todoList = (ListView) findViewById(R.id.lstTodoItems);
+        todoList.setAdapter(adapter);
 	}
 
 	@Override
