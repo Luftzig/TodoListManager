@@ -5,19 +5,18 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 public class TodoListManagerActivity extends Activity {
 
-	private static List<String> todoStrings = new ArrayList<String> ();
-	private ArrayAdapter adapter;
+	private ArrayAdapter<String> adapter;
 	private ListView todoList;
-    static {
-        todoStrings.add("Test!!!");
-    }
+    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +31,18 @@ public class TodoListManagerActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menuItemAdd:
-			// Blah Blah
+			EditText newTodo = (EditText) findViewById(R.id.edtNewItem);
+			if (newTodo.toString() != "") {
+				adapter.add(new String(newTodo.getText().toString()));
+			}
+			newTodo.setText("");
 			break;
 		case R.id.menuItemDelete:
-			// Other Blah Blah
+			int pos = todoList.getSelectedItemPosition();
+			Log.d(INPUT_SERVICE, "selected " + pos);
+			if (pos >= 0) {
+				adapter.remove((String) todoList.getSelectedItem());
+			}
 			break;
 		default:
 			// Noop
