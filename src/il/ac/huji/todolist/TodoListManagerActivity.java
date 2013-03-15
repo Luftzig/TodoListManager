@@ -5,28 +5,12 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.ListActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class TodoListManagerActivity extends ListActivity {
-
-    @Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menuItemAdd:
-			// Blah Blah
-			break;
-		case R.id.menuItemDelete:
-			// Other Blah Blah
-			break;
-		default:
-			// No Op
-		}
-		return super.onOptionsItemSelected(item);
-	}
+public class TodoListManagerActivity extends Activity {
 
 	private static List<String> todoStrings = new ArrayList<String> ();
 	private ArrayAdapter adapter;
@@ -42,6 +26,21 @@ public class TodoListManagerActivity extends ListActivity {
         adapter = new TodoAdapter(this);
         todoList = (ListView) findViewById(R.id.lstTodoItems);
         todoList.setAdapter(adapter);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menuItemAdd:
+			// Blah Blah
+			break;
+		case R.id.menuItemDelete:
+			// Other Blah Blah
+			break;
+		default:
+			// Noop
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
