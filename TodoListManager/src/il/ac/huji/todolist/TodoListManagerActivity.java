@@ -17,7 +17,6 @@ public class TodoListManagerActivity extends Activity {
 	private ArrayAdapter<String> adapter;
 	private ListView todoList;
     
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

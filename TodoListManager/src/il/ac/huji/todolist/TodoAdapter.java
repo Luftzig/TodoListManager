@@ -8,27 +8,28 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class TodoAdapter extends ArrayAdapter<String> {
+public class TodoAdapter extends ArrayAdapter<TodoTuple> {
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		String todoString = getItem(position);
-		LayoutInflater inflator = LayoutInflater.from(getContext());
-		View view = inflator.inflate(R.layout.todo_layout, null);
-		TextView txtView = (TextView) view.findViewById(R.id.todoTxt);
-		txtView.setText(todoString);
-		if (position % 2 == 0) {
-			txtView.setTextColor(Color.RED);
-		} else {
-			txtView.setTextColor(Color.BLUE);
-		}
-		return view;
-	}
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        TodoTuple item = getItem(position);
+        LayoutInflater inflator = LayoutInflater.from(getContext());
+        View view = inflator.inflate(R.layout.todo_layout, null);
+        TextView titleView = (TextView) view.findViewById(R.id.txtTodoTitle);
+        TextView dateView = (TextView) view.findViewById(R.id.txtTodoDueDate);
+        titleView.setText(item.getTitle());
+        if (position % 2 == 0) {
+            titleView.setTextColor(Color.RED);
+        } else {
+            titleView.setTextColor(Color.BLUE);
+        }
+        return view;
+    }
 
-	public TodoAdapter(Context context) {
-		super(context, android.R.layout.simple_list_item_1);
-		// TODO Auto-generated constructor stub
-	}
+    public TodoAdapter(Context context) {
+        super(context, android.R.layout.simple_list_item_1);
+        // TODO Auto-generated constructor stub
+    }
 
 
 }
