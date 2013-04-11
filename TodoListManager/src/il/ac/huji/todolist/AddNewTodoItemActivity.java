@@ -5,6 +5,7 @@ import java.util.Calendar;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -33,7 +34,8 @@ public class AddNewTodoItemActivity extends Activity {
         cal.set(datePicker.getYear(), 
                 datePicker.getMonth(), 
                 datePicker.getDayOfMonth());
-        returned.putExtra("title", titleEdit.getText());
+        Log.d("AddNewTodoItemActivity", "title " + titleEdit.getText());
+        returned.putExtra("title", titleEdit.getText().toString());
         returned.putExtra("dueDate", cal.getTime());
         setResult(Activity.RESULT_OK, returned);
         finish();
