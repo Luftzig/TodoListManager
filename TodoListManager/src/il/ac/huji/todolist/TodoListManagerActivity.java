@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,8 @@ public class TodoListManagerActivity extends Activity {
 
 	private ArrayAdapter<TodoTuple> adapter;
 	private ListView todoList;
+
+    final private int ADD_NEW_TODO = 100;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +29,31 @@ public class TodoListManagerActivity extends Activity {
         todoList.setAdapter(adapter);
 	}
 
+    /**
+     * Create new activity to get item info and then add that to adapter
+     */
+    private void addItem() {
+        //  
+        Intent intent = new Intent(this, AddNewTodoItemActivity.class);
+        startActivityForResult(intent, ADD_NEW_TODO);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            // Abort
+            return;
+        }
+        switch (requestCode) {
+            case ADD_NEW_TODO:
+                TodoTuple tuple = new TodoTuple();
+        }
+    }
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menuItemAdd:
-			EditText newTodo = (EditText) findViewById(R.id.edtNewItem);
-			if (newTodo.toString() != "") {
-				adapter.add(new String(newTodo.getText().toString()));
-			}
-			newTodo.setText("");
+            addItem();
 			break;
 		case R.id.menuItemDelete:
 			int pos = todoList.getSelectedItemPosition();

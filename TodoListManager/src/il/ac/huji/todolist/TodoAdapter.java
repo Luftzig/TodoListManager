@@ -2,6 +2,7 @@ package il.ac.huji.todolist;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -24,10 +25,9 @@ public class TodoAdapter extends ArrayAdapter<TodoTuple> {
         TextView dateView = (TextView) view.findViewById(R.id.txtTodoDueDate);
         titleView.setText(item.getTitle());
         dateView.setText(dateFormatter.format(item.getDate()));
-        if (position % 2 == 0) {
+        if (item.getDate().before(new Date())) {
             titleView.setTextColor(Color.RED);
-        } else {
-            titleView.setTextColor(Color.BLUE);
+            dateView.setTextColor(Color.RED);
         }
         return view;
     }
