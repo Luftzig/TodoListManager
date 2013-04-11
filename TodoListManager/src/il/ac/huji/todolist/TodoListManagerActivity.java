@@ -14,7 +14,7 @@ import android.widget.ListView;
 
 public class TodoListManagerActivity extends Activity {
 
-	private ArrayAdapter<String> adapter;
+	private ArrayAdapter<TodoTuple> adapter;
 	private ListView todoList;
     
 	@Override

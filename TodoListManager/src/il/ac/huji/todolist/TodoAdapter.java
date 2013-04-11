@@ -1,5 +1,8 @@
 package il.ac.huji.todolist;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -10,6 +13,8 @@ import android.widget.TextView;
 
 public class TodoAdapter extends ArrayAdapter<TodoTuple> {
 
+    final static private DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TodoTuple item = getItem(position);
@@ -18,6 +23,7 @@ public class TodoAdapter extends ArrayAdapter<TodoTuple> {
         TextView titleView = (TextView) view.findViewById(R.id.txtTodoTitle);
         TextView dateView = (TextView) view.findViewById(R.id.txtTodoDueDate);
         titleView.setText(item.getTitle());
+        dateView.setText(dateFormatter.format(item.getDate()));
         if (position % 2 == 0) {
             titleView.setTextColor(Color.RED);
         } else {

@@ -1,21 +1,18 @@
 package il.ac.huji.todolist;
 
-import java.util.Calendar;
+import java.util.Date;
 
-/**
- * A title-date tuple
- */
 public class TodoTuple {
 
     private String title;
-    private Calendar date;
+    private Date date;
 
     /**
      * Create new tuple.
      * @param title Todo item's title
      * @param date Todo item's due date
      */
-    public TodoTuple(String title, Calendar date) {
+    public TodoTuple(String title, Date date) {
         this.title = title;
         this.date = date;
     }
@@ -37,14 +34,14 @@ public class TodoTuple {
     /**
      * @return the date
      */
-    public Calendar getCalendar() {
+    public Date getDate() {
         return date;
     }
 
     /**
      * @param date the date to set
      */
-    public void setCalendar(Calendar date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 }
