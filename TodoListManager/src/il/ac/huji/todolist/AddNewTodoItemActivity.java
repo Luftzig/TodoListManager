@@ -1,6 +1,6 @@
 package il.ac.huji.todolist;
 
-import java.util.Date;
+import java.util.Calendar;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -16,8 +16,8 @@ public class AddNewTodoItemActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_todo_item);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_add_new_todo_item);
     }
 
     public void cancelCallback(View view) {
@@ -29,10 +29,12 @@ public class AddNewTodoItemActivity extends Activity {
         Intent returned = new Intent();
         EditText titleEdit = (EditText) findViewById(R.id.edtNewItem);
         DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
+        Calendar cal = Calendar.getInstance();
+        cal.set(datePicker.getYear(), 
+                datePicker.getMonth(), 
+                datePicker.getDayOfMonth());
         returned.putExtra("title", titleEdit.getText());
-        returned.putExtra("year", datePicker.getYear());
-        returned.putExtra("month", datePicker.getMonth());
-        returned.putExtra("day", datePicker.getDayOfMonth());
+        returned.putExtra("dueDate", cal.getTime());
         setResult(Activity.RESULT_OK, returned);
         finish();
     }

@@ -24,7 +24,11 @@ public class TodoAdapter extends ArrayAdapter<TodoTuple> {
         TextView titleView = (TextView) view.findViewById(R.id.txtTodoTitle);
         TextView dateView = (TextView) view.findViewById(R.id.txtTodoDueDate);
         titleView.setText(item.getTitle());
-        dateView.setText(dateFormatter.format(item.getDate()));
+        Date date = item.getDate();
+        if (date == null) {
+            dateView.setText("No due date");
+        }
+        dateView.setText(dateFormatter.format(date));
         if (item.getDate().before(new Date())) {
             titleView.setTextColor(Color.RED);
             dateView.setTextColor(Color.RED);
