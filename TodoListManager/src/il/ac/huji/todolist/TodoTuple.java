@@ -2,7 +2,7 @@ package il.ac.huji.todolist;
 
 import java.util.Date;
 
-public class TodoTuple {
+public class TodoTuple implements ITodoItem {
 
     private String title;
     private Date date;
@@ -43,5 +43,13 @@ public class TodoTuple {
      */
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    /**
+     * Needless alias.
+     */
+    public Date getDueDate() {
+        return getDate();
     }
 }

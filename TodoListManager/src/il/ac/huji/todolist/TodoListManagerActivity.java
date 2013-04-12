@@ -22,6 +22,7 @@ public class TodoListManagerActivity extends Activity {
 
     private ArrayAdapter<TodoTuple> adapter;
     private ListView todoList;
+    private DBHelper dbHelper;
 
     final private int ADD_NEW_TODO = 100;
 
@@ -33,6 +34,8 @@ public class TodoListManagerActivity extends Activity {
         todoList = (ListView) findViewById(R.id.lstTodoItems);
         registerForContextMenu(todoList);
         todoList.setAdapter(adapter);
+        // DB stuff
+        dbHelper = new DBHelper(this);
     }
 
     /**
