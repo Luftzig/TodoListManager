@@ -36,8 +36,6 @@ public class TodoListManagerActivity extends Activity {
         registerForContextMenu(todoList);
         // todoList.setAdapter(adapter);
         // DB stuff
-        Parse.initialize(this, getString(R.string.parseApplication), 
-                getString(R.string.clientKey));
         dal = new TodoDAL(this);
         String[] columns = new String[] {"title", "due"};
         int[] ids = new int[] {R.id.txtTodoTitle, R.id.txtTodoDueDate};
