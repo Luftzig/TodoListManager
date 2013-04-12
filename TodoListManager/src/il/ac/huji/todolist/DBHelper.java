@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // Column names
     private static final String KEY_ID = "_id";
     private static final String KEY_TITLE = "title";
-    private static final String KEY_DUE = "DUE";
+    private static final String KEY_DUE = "due";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Notes to the reader:
         // A. SQLite has no "long" type, only integer.
         // B. Autoincrement is set implicitly by "primary key"
-        db.execSQL("CREATE TABLE" + TABLE_TODO + "("
+        db.execSQL("CREATE TABLE " + TABLE_TODO + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " 
                 + KEY_TITLE + " TEXT, "
                 + KEY_DUE   + " INTEGER" + ")");
@@ -87,14 +87,18 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<ITodoItem> getAll() {
-        List<ITodoItem> all = new ArrayList<ITodoItem>();
-
+    public Cursor allCursor() {
         String query = "SELECT * FROM " + TABLE_TODO;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
+        return cursor;
+    }
 
+    public List<ITodoItem> getAll() {
+        List<ITodoItem> all = new ArrayList<ITodoItem>();
+
+        Cursor cursor = allCursor();
         if (cursor.moveToFirst()) {
             do {
                 Date date = new Date(cursor.getLong(2));

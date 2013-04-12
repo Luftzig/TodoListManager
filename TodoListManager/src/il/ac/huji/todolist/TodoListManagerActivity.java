@@ -15,14 +15,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.parse.Parse;
 
 public class TodoListManagerActivity extends Activity {
 
-    private ArrayAdapter<TodoTuple> adapter;
+    private TodoAdapter adapter;
     private ListView todoList;
-    private DBHelper dbHelper;
+    private TodoDAL dal;
 
     final private int ADD_NEW_TODO = 100;
 
@@ -30,12 +31,18 @@ public class TodoListManagerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list_manager);
-        adapter = new TodoAdapter(this);
+        // adapter = new TodoAdapter(this);
         todoList = (ListView) findViewById(R.id.lstTodoItems);
         registerForContextMenu(todoList);
-        todoList.setAdapter(adapter);
+        // todoList.setAdapter(adapter);
         // DB stuff
-        dbHelper = new DBHelper(this);
+        Parse.initialize(this, getString(R.string.parseApplication), 
+                getString(R.string.clientKey));
+        dal = new TodoDAL(this);
+        String[] columns = new String[] {"title", "due"};
+        int[] ids = new int[] {R.id.txtTodoTitle, R.id.txtTodoDueDate};
+        adapter = new TodoAdapter(this, dal.allCursor(), columns, ids);
+        todoList.setAdapter(adapter);
     }
 
     /**
@@ -56,7 +63,10 @@ public class TodoListManagerActivity extends Activity {
         case ADD_NEW_TODO:
             TodoTuple tuple = new TodoTuple(data.getStringExtra("title"),
                     (Date) data.getSerializableExtra("dueDate"));
-            adapter.add(tuple);
+            // adapter.add(tuple);
+            dal.insert(tuple);
+            adapter.changeCursor(dal.allCursor());
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -70,7 +80,9 @@ public class TodoListManagerActivity extends Activity {
             int pos = todoList.getSelectedItemPosition();
             Log.d(INPUT_SERVICE, "selected " + pos);
             if (pos >= 0) {
-                adapter.remove((TodoTuple) todoList.getSelectedItem());
+                dal.delete((TodoTuple) todoList.getSelectedItem());
+                adapter.changeCursor(dal.allCursor());
+                adapter.notifyDataSetChanged();
             }
             break;
         default:
@@ -84,10 +96,12 @@ public class TodoListManagerActivity extends Activity {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.menuItemDelete:
-                adapter.remove(adapter.getItem(info.position));
+                dal.delete((ITodoItem) adapter.getItem(info.position));
+                adapter.changeCursor(dal.allCursor());
+                adapter.notifyDataSetChanged();
                 return true;
             case R.id.menuItemCall:
-                String title = adapter.getItem(info.position).getTitle();
+                String title = ((ITodoItem) adapter.getItem(info.position)).getTitle();
                 String number = title.substring("Call ".length());
                 Log.d("ContextMenu", "num to call " + number);
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
@@ -107,7 +121,7 @@ public class TodoListManagerActivity extends Activity {
         inflater.inflate(R.menu.context_menu, menu);
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) menuInfo;
-        String title = adapter.getItem(info.position).getTitle();
+        String title = ((ITodoItem) adapter.getItem(info.position)).getTitle();
         Log.d(TodoListManagerActivity.class.toString(), "position is " + info.position);
         menu.setHeaderTitle(title);
         if (title.startsWith("Call ")) {

@@ -5,41 +5,66 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-public class TodoAdapter extends ArrayAdapter<TodoTuple> {
+public class TodoAdapter extends SimpleCursorAdapter {
 
-    final static private DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+    final static private DateFormat dateFormatter = new SimpleDateFormat(
+            "dd/MM/yyyy");
+
+    private final Context context;
+
+    public TodoAdapter(Context context, Cursor cursor, String[] from, int[] to) {
+        super(context, R.layout.todo_layout, cursor, from, to, 0);
+        this.context = context;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TodoTuple item = getItem(position);
-        LayoutInflater inflator = LayoutInflater.from(getContext());
+        LayoutInflater inflator = LayoutInflater.from(context);
+        ITodoItem item = getItem(position);
         View view = inflator.inflate(R.layout.todo_layout, null);
         TextView titleView = (TextView) view.findViewById(R.id.txtTodoTitle);
         TextView dateView = (TextView) view.findViewById(R.id.txtTodoDueDate);
         titleView.setText(item.getTitle());
-        Date date = item.getDate();
+        Date date = item.getDueDate();
         if (date == null) {
             dateView.setText("No due date");
         }
         dateView.setText(dateFormatter.format(date));
-        if (item.getDate().before(new Date())) {
+        if (date.before(new Date())) {
             titleView.setTextColor(Color.RED);
             dateView.setTextColor(Color.RED);
         }
         return view;
     }
 
-    public TodoAdapter(Context context) {
-        super(context, android.R.layout.simple_list_item_1);
-        // TODO Auto-generated constructor stub
+    public ITodoItem getItem(int position) {
+        getCursor().moveToPosition(position);
+        Long epoch = getCursor().getLong(2);
+        Date date = null;
+        if (epoch >= 0) {
+            date = new Date(getCursor().getLong(2));
+        }
+        return new TodoTuple(getCursor().getString(1), date);
     }
 
+    @Override
+    public void bindView(View arg0, Context arg1, Cursor arg2) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public View newView(Context arg0, Cursor arg1, ViewGroup arg2) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
