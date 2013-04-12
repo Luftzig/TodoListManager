@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.parse.FindCallback;
 import com.parse.Parse;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -21,6 +23,9 @@ public class TodoDAL {
         db = new DBHelper(context);
         Parse.initialize(context, context.getString(R.string.parseApplication),
                 context.getString(R.string.clientKey));
+        ParseUser.enableAutomaticUser();
+        ParseACL defaultACL = new ParseACL();
+        ParseACL.setDefaultACL(defaultACL, true);
     }
 
     public boolean insert(ITodoItem todoItem) {
