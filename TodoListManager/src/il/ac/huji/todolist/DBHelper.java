@@ -64,15 +64,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + TABLE_THUMBS + " ( "
                 + THUMBS_ID + " INTEGER PRIMARY KEY, "
                 + THUMBS_PATH + " TEXT)");
-        // Populating tables
-        SharedPreferences sharedPerfs = PreferenceManager.getDefaultSharedPreferences(context);
-        String hashTag = sharedPerfs.getString("prefHashTag", context.getString(R.string.hashTagDefault));
-        if (hashTag.startsWith("#")) {
-            hashTag = hashTag.substring(1);
-        }
-        Log.d("DBHelper", "initializing hash tag to " + hashTag);
-        this.insertKey(context.getString(R.string.hashTagKey), 
-                hashTag, db);
     }
 
     @Override

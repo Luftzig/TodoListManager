@@ -91,17 +91,22 @@ public class TodoListManagerActivity extends Activity {
         TwitterGetTask tweetGetter = new TwitterGetTask();
         String lastTweetId = dbHelper
                 .getPresistentData(getString(R.string.lastTweetKey));
-        String hashTag = dbHelper
-                .getPresistentData(getString(R.string.hashTagKey));
+        // Populating tables
+        SharedPreferences sharedPerfs = PreferenceManager.getDefaultSharedPreferences(this);
+        String hashTag = sharedPerfs.getString("prefHashTag", getString(R.string.hashTagDefault));
+        if (hashTag.startsWith("#")) {
+            hashTag = hashTag.substring(1);
+        }
+        Log.d("DBHelper", "initializing hash tag to " + hashTag);
         String url = "http://search.twitter.com/search.json?result_type=recent&q=%23"
-                + hashTag;
+                + hashTag + "&rpp=100";
         if (lastTweetId == null || lastTweetId.isEmpty() || lastTweetId == "0") {
             // Get 100 latest
-            tweetGetter.execute(url + "&rpp=100",
+            tweetGetter.execute(url,
                     "There are %d tweets with tag " + hashTag + ". Import?");
         } else {
             tweetGetter
-                    .execute(url + "&rpp=100&since_id=" + lastTweetId,
+                    .execute(url + "&since_id=" + lastTweetId,
                             "There are %d new tweets with tag " + hashTag
                                     + ". Import?");
         }
@@ -134,10 +139,7 @@ public class TodoListManagerActivity extends Activity {
             Log.d("onActivityResult", "Results returned");
             SharedPreferences sharedPerfs = PreferenceManager.getDefaultSharedPreferences(this);
             String hashTag = sharedPerfs.getString("prefHashTag", "todoapp");
-            if (hashTag.startsWith("#")) {
-                hashTag = hashTag.substring(1);
-            }
-            dbHelper.updateKey(getString(R.string.hashTagKey), hashTag);
+            Log.d("TodoListManagerActivity", "new hashTag " + hashTag);
             break;
         }
     }
