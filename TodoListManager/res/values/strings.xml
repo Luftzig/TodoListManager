@@ -22,5 +22,6 @@
     <string name="pref_hash_tag_summary">Look for tweets with this hash tag and import as todo items.</string>
     <string name="settingItem">Settings</string>
     <string name="settings_title">User Settings</string>
+    <string name="maluubaKey">UgAjZ8Ebiu2FUP4G6O5r5thennnBZpm4</string>
 
 </resources>

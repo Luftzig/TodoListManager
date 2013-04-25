@@ -1,9 +1,15 @@
 package il.ac.huji.todolist;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,17 +54,18 @@ public class TodoListManagerActivity extends Activity {
     private class Tweet {
         public String id;
         public String text;
+        public Date due;
 
         /**
          * @param id
          * @param text
          */
-        public Tweet(String id, String text) {
+        public Tweet(String id, String text, Date due) {
             this.id = id;
             this.text = text;
+            this.due = due;
         }
     }
-
 
     private TodoAdapter adapter;
     private ListView todoList;
@@ -92,8 +99,10 @@ public class TodoListManagerActivity extends Activity {
         String lastTweetId = dbHelper
                 .getPresistentData(getString(R.string.lastTweetKey));
         // Populating tables
-        SharedPreferences sharedPerfs = PreferenceManager.getDefaultSharedPreferences(this);
-        String hashTag = sharedPerfs.getString("prefHashTag", getString(R.string.hashTagDefault));
+        SharedPreferences sharedPerfs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        String hashTag = sharedPerfs.getString("prefHashTag",
+                getString(R.string.hashTagDefault));
         if (hashTag.startsWith("#")) {
             hashTag = hashTag.substring(1);
         }
@@ -102,8 +111,8 @@ public class TodoListManagerActivity extends Activity {
                 + hashTag + "&rpp=100";
         if (lastTweetId == null || lastTweetId.isEmpty() || lastTweetId == "0") {
             // Get 100 latest
-            tweetGetter.execute(url,
-                    "There are %d tweets with tag " + hashTag + ". Import?");
+            tweetGetter.execute(url, "There are %d tweets with tag " + hashTag
+                    + ". Import?");
         } else {
             tweetGetter
                     .execute(url + "&since_id=" + lastTweetId,
@@ -137,7 +146,8 @@ public class TodoListManagerActivity extends Activity {
             break;
         case RESULT_SETTINGS:
             Log.d("onActivityResult", "Results returned");
-            SharedPreferences sharedPerfs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences sharedPerfs = PreferenceManager
+                    .getDefaultSharedPreferences(this);
             String hashTag = sharedPerfs.getString("prefHashTag", "todoapp");
             Log.d("TodoListManagerActivity", "new hashTag " + hashTag);
             break;
@@ -249,13 +259,14 @@ public class TodoListManagerActivity extends Activity {
         }
 
         protected void addTweets() {
-            for (Tweet t: tweets) {
-                TodoTuple todo = new TodoTuple(t.text, null);
+            for (Tweet t : tweets) {
+                TodoTuple todo = new TodoTuple(t.text, t.due);
                 dal.insert(todo);
             }
             adapter.changeCursor(dal.allCursor());
             adapter.notifyDataSetChanged();
-            String oldKey = dbHelper.updateKey(getString(R.string.lastTweetKey), getLatestId());
+            String oldKey = dbHelper.updateKey(
+                    getString(R.string.lastTweetKey), getLatestId());
             Log.i("TwitterGetTask", "Old latest ID " + oldKey);
         }
 
@@ -265,19 +276,24 @@ public class TodoListManagerActivity extends Activity {
             TextView progress = (TextView) findViewById(R.id.progress);
             progress.setVisibility(View.GONE);
             if (tweets.size() > 0) {
-                AlertDialog dialog = new AlertDialog.Builder(TodoListManagerActivity.this)
-                    .setTitle(getString(R.string.importTitle))
-                    .setMessage(String.format(message, tweets.size()))
-                    .setPositiveButton(R.string.importLbl, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            addTweets();
-                        }
-                    })
-                    .setNegativeButton(R.string.not_now, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // No-op
-                        }
-                    }).create();
+                AlertDialog dialog = new AlertDialog.Builder(
+                        TodoListManagerActivity.this)
+                        .setTitle(getString(R.string.importTitle))
+                        .setMessage(String.format(message, tweets.size()))
+                        .setPositiveButton(R.string.importLbl,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                            int which) {
+                                        addTweets();
+                                    }
+                                })
+                        .setNegativeButton(R.string.not_now,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                            int which) {
+                                        // No-op
+                                    }
+                                }).create();
                 dialog.show();
             }
         }
@@ -285,7 +301,8 @@ public class TodoListManagerActivity extends Activity {
         protected String getLatestId() {
             long latest;
             try {
-                latest = Long.valueOf(dbHelper.getPresistentData(getString(R.string.lastTweetKey)));
+                latest = Long.valueOf(dbHelper
+                        .getPresistentData(getString(R.string.lastTweetKey)));
             } catch (NumberFormatException e) {
                 latest = 0;
             }
@@ -315,10 +332,12 @@ public class TodoListManagerActivity extends Activity {
                 while ((line = buffered.readLine()) != null) {
                     tweetsBuilder.append(line);
                 }
-                Log.i("TwitterGetTask", "Got tweetString: " + tweetsBuilder.toString());
+                Log.i("TwitterGetTask",
+                        "Got tweetString: " + tweetsBuilder.toString());
                 return tweetsBuilder.toString();
             } else {
-                throw new IOException("request status is " + status.getStatusCode());
+                throw new IOException("request status is "
+                        + status.getStatusCode());
             }
         }
 
@@ -328,9 +347,11 @@ public class TodoListManagerActivity extends Activity {
             JSONArray array = json.getJSONArray("results");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject tweetJson = array.getJSONObject(i);
-                Log.d("TwitterGetTask", "tweet " + i + ": " + tweetJson.toString(4));
+                Log.d("TwitterGetTask",
+                        "tweet " + i + ": " + tweetJson.toString(4));
+                String text = tweetJson.getString(TWEET_TEXT);
                 Tweet tweet = new Tweet(tweetJson.getString(TWEET_ID),
-                        tweetJson.getString(TWEET_TEXT));
+                        text, getDueDate(text));
                 result.add(tweet);
             }
             return result;
@@ -347,6 +368,38 @@ public class TodoListManagerActivity extends Activity {
             TextView progress = (TextView) findViewById(R.id.progress);
             progress.setVisibility(View.VISIBLE);
             super.onPreExecute();
+        }
+
+        protected Date getDueDate(String message) {
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL(
+                        "http://napi.maluuba.com/v0/normalize?&type=daterange&" 
+                        + "apikey=" + getString(R.string.maluubaKey) 
+                        + "&phrase=" + Uri.encode(message));
+                StringBuilder result = new StringBuilder();
+                connection = (HttpURLConnection) url.openConnection();
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream()));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result.append(line);
+                }
+                in.close();
+                Log.d("TwitterGetTask", "Maluuba response " + result.toString());
+                JSONObject json = new JSONObject(result.toString());
+                JSONObject entities = json.getJSONObject("entities");
+                JSONArray dates = entities.getJSONArray("dateRange");
+                String endDate = dates.getJSONObject(0).getString("end");
+                DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = formater.parse(endDate);
+                return date;
+            } catch (Exception e) {
+                Log.e("TwitterGetTask", "Exception while parsing date", e);
+                return null;
+            } finally {
+                connection.disconnect();
+            }
         }
 
     }
