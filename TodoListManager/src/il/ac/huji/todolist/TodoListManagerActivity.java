@@ -101,7 +101,7 @@ public class TodoListManagerActivity extends Activity {
                     "There are %d tweets with tag " + hashTag + ". Import?");
         } else {
             tweetGetter
-                    .execute(url + "&since_id=" + lastTweetId,
+                    .execute(url + "&rpp=100&since_id=" + lastTweetId,
                             "There are %d new tweets with tag " + hashTag
                                     + ". Import?");
         }

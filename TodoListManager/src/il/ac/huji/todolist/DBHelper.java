@@ -8,9 +8,11 @@ import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -63,8 +65,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 + THUMBS_ID + " INTEGER PRIMARY KEY, "
                 + THUMBS_PATH + " TEXT)");
         // Populating tables
+        SharedPreferences sharedPerfs = PreferenceManager.getDefaultSharedPreferences(context);
+        String hashTag = sharedPerfs.getString("prefHashTag", context.getString(R.string.hashTagDefault));
+        if (hashTag.startsWith("#")) {
+            hashTag = hashTag.substring(1);
+        }
+        Log.d("DBHelper", "initializing hash tag to " + hashTag);
         this.insertKey(context.getString(R.string.hashTagKey), 
-                context.getString(R.string.hashTagDefault), db);
+                hashTag, db);
     }
 
     @Override

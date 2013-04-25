@@ -32,7 +32,7 @@
         </activity>
         <activity
             android:name="il.ac.huji.todolist.UserSettingsActivity"
-			android:label="@string/settings_title" >
+			android:label="@string/settings_title" android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
     </application>
 
