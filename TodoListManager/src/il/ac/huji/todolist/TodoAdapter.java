@@ -7,6 +7,7 @@ import java.util.Date;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +35,15 @@ public class TodoAdapter extends SimpleCursorAdapter {
         TextView dateView = (TextView) view.findViewById(R.id.txtTodoDueDate);
         titleView.setText(item.getTitle());
         Date date = item.getDueDate();
-        if (date == null) {
+        // Log.d("TodoAdapter", "date is " + date + " time " + date.getTime());
+        if (date == null || date.getTime() == 0) {
             dateView.setText("No due date");
-        }
-        dateView.setText(dateFormatter.format(date));
-        if (date.before(new Date())) {
-            titleView.setTextColor(Color.RED);
-            dateView.setTextColor(Color.RED);
+        } else {
+            dateView.setText(dateFormatter.format(date));
+            if (date.before(new Date())) {
+                titleView.setTextColor(Color.RED);
+                dateView.setTextColor(Color.RED);
+            }
         }
         return view;
     }

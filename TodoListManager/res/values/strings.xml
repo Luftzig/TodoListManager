@@ -9,5 +9,12 @@
     <string name="title_activity_add_new_todo_item">AddNewTodoItemActivity</string>
     <string name="parseApplication">yEgugGBG4a8JxI3k9QkT6aD8LsIfskLidYBNmeau</string>
     <string name="clientKey">0h3aHvnxtmmUHLqNLiXkFxGjQ6gkoHzNE4lwkLm0</string>
+    <!-->Database related strings</-->
+    <string name="hashTagKey">hashTag</string>
+    <string name="hashTagDefault">todoapp</string>
+    <string name="lastTweetKey">lastTweetId</string>
+    <string name="importLbl">Import Tweets</string>
+    <string name="not_now">Not now</string>
+    <string name="importTitle">Import from Twitter</string>
 
 </resources>

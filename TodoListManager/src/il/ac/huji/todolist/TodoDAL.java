@@ -31,7 +31,11 @@ public class TodoDAL {
     public boolean insert(ITodoItem todoItem) {
         ParseObject todoObj = new ParseObject("todo");
         todoObj.put("title", todoItem.getTitle());
-        todoObj.put("due", todoItem.getDueDate().getTime());
+        if (todoItem.getDueDate() != null) {
+            todoObj.put("due", todoItem.getDueDate().getTime());
+        } else {
+            todoObj.put("due", 0);
+        }
         todoObj.saveInBackground();
         return db.insert(todoItem);
     }
@@ -91,5 +95,12 @@ public class TodoDAL {
 
     public Cursor allCursor() {
         return db.allCursor();
+    }
+
+    /**
+     * @return the db
+     */
+    public DBHelper getDb() {
+        return db;
     }
 }

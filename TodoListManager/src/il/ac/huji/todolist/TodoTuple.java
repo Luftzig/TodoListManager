@@ -6,6 +6,7 @@ public class TodoTuple implements ITodoItem {
 
     private String title;
     private Date date;
+    private String path;
 
     /**
      * Create new tuple.
@@ -15,6 +16,18 @@ public class TodoTuple implements ITodoItem {
     public TodoTuple(String title, Date date) {
         this.title = title;
         this.date = date;
+        this.path = null;
+    }
+
+    /**
+     * @param title
+     * @param date
+     * @param path
+     */
+    public TodoTuple(String title, Date date, String path) {
+        this.title = title;
+        this.date = date;
+        this.path = path;
     }
 
     /**
@@ -45,11 +58,35 @@ public class TodoTuple implements ITodoItem {
         this.date = date;
     }
 
+    /**
+     * @return the path
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * @param path the path to set
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     @Override
     /**
      * Needless alias.
      */
     public Date getDueDate() {
         return getDate();
+    }
+
+    @Override
+    public String getThumbPath() {
+        return this.getPath();
+    }
+
+    @Override
+    public boolean hasThumb() {
+        return (path != null);
     }
 }
