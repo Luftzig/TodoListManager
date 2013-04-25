@@ -30,6 +30,10 @@
 			android:theme="@android:style/Theme.Dialog"
             android:label="@string/title_activity_add_new_todo_item" >
         </activity>
+        <activity
+            android:name="il.ac.huji.todolist.UserSettingsActivity"
+			android:label="@string/settings_title" >
+        </activity>
     </application>
 
 </manifest>

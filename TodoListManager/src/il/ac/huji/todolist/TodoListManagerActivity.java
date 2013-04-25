@@ -22,10 +22,12 @@ import org.json.JSONObject;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -57,6 +59,7 @@ public class TodoListManagerActivity extends Activity {
         }
     }
 
+
     private TodoAdapter adapter;
     private ListView todoList;
     private TodoDAL dal;
@@ -64,6 +67,7 @@ public class TodoListManagerActivity extends Activity {
 
     // Constants
     final private int ADD_NEW_TODO = 100;
+    private static final int RESULT_SETTINGS = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +97,13 @@ public class TodoListManagerActivity extends Activity {
                 + hashTag;
         if (lastTweetId == null || lastTweetId.isEmpty() || lastTweetId == "0") {
             // Get 100 latest
-            tweetGetter.execute(url + "&rpp=100", "There are %d tweets with tag " + hashTag + ". Import?");
+            tweetGetter.execute(url + "&rpp=100",
+                    "There are %d tweets with tag " + hashTag + ". Import?");
         } else {
-            tweetGetter.execute(url + "&since_id=" + lastTweetId, "There are %d new tweets with tag " + hashTag + ". Import?");
+            tweetGetter
+                    .execute(url + "&since_id=" + lastTweetId,
+                            "There are %d new tweets with tag " + hashTag
+                                    + ". Import?");
         }
     }
 
@@ -109,18 +117,28 @@ public class TodoListManagerActivity extends Activity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            // Abort
-            return;
-        }
         switch (requestCode) {
         case ADD_NEW_TODO:
+            if (resultCode != Activity.RESULT_OK) {
+                // Abort
+                return;
+            }
             TodoTuple tuple = new TodoTuple(data.getStringExtra("title"),
                     (Date) data.getSerializableExtra("dueDate"));
             // adapter.add(tuple);
             dal.insert(tuple);
             adapter.changeCursor(dal.allCursor());
             adapter.notifyDataSetChanged();
+            break;
+        case RESULT_SETTINGS:
+            Log.d("onActivityResult", "Results returned");
+            SharedPreferences sharedPerfs = PreferenceManager.getDefaultSharedPreferences(this);
+            String hashTag = sharedPerfs.getString("prefHashTag", "todoapp");
+            if (hashTag.startsWith("#")) {
+                hashTag = hashTag.substring(1);
+            }
+            dbHelper.updateKey(getString(R.string.hashTagKey), hashTag);
+            break;
         }
     }
 
@@ -138,6 +156,10 @@ public class TodoListManagerActivity extends Activity {
                 adapter.changeCursor(dal.allCursor());
                 adapter.notifyDataSetChanged();
             }
+            break;
+        case R.id.menuSettings:
+            Intent i = new Intent(this, UserSettingsActivity.class);
+            startActivityForResult(i, RESULT_SETTINGS);
             break;
         default:
             // Noop

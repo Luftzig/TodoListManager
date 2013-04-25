@@ -17,5 +17,10 @@
     <string name="not_now">Not now</string>
     <string name="importTitle">Import from Twitter</string>
     <string name="getting_tweets">Getting tweets...</string>
+    <string name="pref_twitter">Twitter Settings</string>
+    <string name="pref_hash_tag">Hash tag</string>
+    <string name="pref_hash_tag_summary">Look for tweets with this hash tag and import as todo items.</string>
+    <string name="settingItem">Settings</string>
+    <string name="settings_title">User Settings</string>
 
 </resources>
