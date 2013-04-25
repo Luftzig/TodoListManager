@@ -16,5 +16,6 @@
     <string name="importLbl">Import Tweets</string>
     <string name="not_now">Not now</string>
     <string name="importTitle">Import from Twitter</string>
+    <string name="getting_tweets">Getting tweets...</string>
 
 </resources>

@@ -36,6 +36,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class TodoListManagerActivity extends Activity {
 
@@ -237,6 +238,8 @@ public class TodoListManagerActivity extends Activity {
         @Override
         protected void onPostExecute(Long result) {
             Log.i("TwitterGetTask", "Got " + tweets.size() + " new tweets");
+            TextView progress = (TextView) findViewById(R.id.progress);
+            progress.setVisibility(View.GONE);
             if (tweets.size() > 0) {
                 AlertDialog dialog = new AlertDialog.Builder(TodoListManagerActivity.this)
                     .setTitle(getString(R.string.importTitle))
@@ -313,6 +316,13 @@ public class TodoListManagerActivity extends Activity {
         protected void onProgressUpdate(Integer... values) {
             // TODO Auto-generated method stub
             super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            TextView progress = (TextView) findViewById(R.id.progress);
+            progress.setVisibility(View.VISIBLE);
+            super.onPreExecute();
         }
 
     }
