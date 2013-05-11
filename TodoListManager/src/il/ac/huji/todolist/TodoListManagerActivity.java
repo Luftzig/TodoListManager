@@ -162,7 +162,7 @@ public class TodoListManagerActivity extends Activity {
             break;
         case R.id.menuItemDelete:
             int pos = todoList.getSelectedItemPosition();
-            Log.d(INPUT_SERVICE, "selected " + pos);
+            Log.d("Test", "selected " + pos);
             if (pos >= 0) {
                 dal.delete((TodoTuple) todoList.getSelectedItem());
                 adapter.changeCursor(dal.allCursor());
